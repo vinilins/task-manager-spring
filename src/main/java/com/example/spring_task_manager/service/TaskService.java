@@ -2,6 +2,7 @@ package com.example.spring_task_manager.service;
 
 import com.example.spring_task_manager.dto.TaskCreateRequest;
 import com.example.spring_task_manager.dto.TaskUpdateRequest;
+import com.example.spring_task_manager.exception.TaskNotFoundException;
 import com.example.spring_task_manager.model.Task;
 import com.example.spring_task_manager.repository.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class TaskService {
         Task taskFound = repository.findById(id);
 
         if (taskFound == null) {
-            return null;
+            throw new TaskNotFoundException(id);
         }
         if (title != null) {
             taskFound.setTitle(title);
@@ -49,7 +50,7 @@ public class TaskService {
     public boolean delete(Long id) {
         var taskFound = repository.findById(id);
 
-        if (taskFound == null) { return false;}
+        if (taskFound == null) { throw new TaskNotFoundException(id); }
 
         return repository.delete(taskFound);
     }

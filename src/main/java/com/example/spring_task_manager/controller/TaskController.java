@@ -31,20 +31,17 @@ public class TaskController {
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<Object> editTasks(@PathVariable Long id, @RequestBody TaskUpdateRequest request) {
+    public ResponseEntity<Task> editTasks(@PathVariable Long id, @RequestBody TaskUpdateRequest request) {
         var taskEdited = service.editById(id, request);
-
-        if (taskEdited == null) { return ResponseEntity.notFound().build(); }
 
         return ResponseEntity.ok(taskEdited);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Object> deleteTasks(@PathVariable Long id) {
-        var deleted = service.delete(id);
+    public ResponseEntity<Void> deleteTasks(@PathVariable Long id) {
+        service.delete(id);
 
-        if (deleted) return ResponseEntity.noContent().build();
-        else return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 
 }

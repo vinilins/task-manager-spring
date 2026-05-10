@@ -1,10 +1,9 @@
 package com.example.spring_task_manager.controller;
 
-import com.example.spring_task_manager.dto.TaskRequest;
+import com.example.spring_task_manager.dto.TaskCreateRequest;
 import com.example.spring_task_manager.dto.TaskUpdateRequest;
 import com.example.spring_task_manager.model.Task;
-import com.example.spring_task_manager.repository.TaskRepository;
-import org.springframework.http.MediaType;
+import com.example.spring_task_manager.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,50 +12,39 @@ import java.util.List;
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
-    private final TaskRepository repository;
+    private final TaskService service;
 
-    public TaskController(TaskRepository repository) {
-        this.repository = repository;
+    public TaskController(TaskService service) {
+        this.service = service;
     }
 
     @GetMapping
     public List<Task> listTasks() {
-        return repository.getAllTasks();
+        return service.getAll();
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTasks(@RequestBody TaskRequest request) {
-        String requestTitle = request.getTitle();
-        boolean requestCompleted = request.isCompleted();
-
-        Task newTask = repository.createNewTask(requestTitle, requestCompleted);
+    public ResponseEntity<Task> createTasks(@RequestBody TaskCreateRequest request) {
+        var newTask = service.create(request);
 
         return ResponseEntity.status(201).body(newTask);
     }
 
     @PatchMapping(value = "/{id}")
     public ResponseEntity<Object> editTasks(@PathVariable Long id, @RequestBody TaskUpdateRequest request) {
-        Task task_finded = repository.findTaskById(id);
+        var taskEdited = service.editById(id, request);
 
-        if (task_finded == null) {
-            return ResponseEntity.status(404).build();
-        }
-        if (request.getTitle() != null) {
-            task_finded.setTitle(request.getTitle());
-        }
-        if (request.isCompleted() != null) {
-            task_finded.setCompleted(request.isCompleted());
-        }
+        if (taskEdited == null) { return ResponseEntity.notFound().build(); }
 
-        return ResponseEntity.status(200).body(task_finded);
+        return ResponseEntity.ok(taskEdited);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteTasks(@PathVariable Long id) {
-        var deleted = repository.delete(id);
+        var deleted = service.delete(id);
 
-        if (deleted) return ResponseEntity.status(204).build();
-        else return ResponseEntity.status(404).build();
+        if (deleted) return ResponseEntity.noContent().build();
+        else return ResponseEntity.notFound().build();
     }
 
 }

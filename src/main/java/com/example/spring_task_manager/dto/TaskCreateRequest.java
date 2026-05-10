@@ -1,10 +1,10 @@
 package com.example.spring_task_manager.dto;
 
-public class TaskRequest {
+public class TaskCreateRequest {
     private String title;
     private boolean completed;
 
-    public TaskRequest(String title, boolean completed) {
+    public TaskCreateRequest(String title, boolean completed) {
         this.title = title;
         this.completed = completed;
     }

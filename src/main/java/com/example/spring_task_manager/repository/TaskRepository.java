@@ -16,11 +16,11 @@ public class TaskRepository {
             )
     );
 
-    public List<Task> getAllTasks() {
+    public List<Task> getAll() {
         return allTasks;
     }
 
-    public Task createNewTask(String title, boolean completed) {
+    public Task create(String title, boolean completed) {
         idSequence++;
 
         Task newTask = new Task(idSequence, title, completed);
@@ -29,7 +29,7 @@ public class TaskRepository {
         return newTask;
     }
 
-    public Task findTaskById(Long id) {
+    public Task findById(Long id) {
         for (Task task : allTasks) {
             if (task.getId().equals(id)) { return task; }
         }
@@ -37,12 +37,8 @@ public class TaskRepository {
         return null;
     }
 
-    public boolean delete(Long id) {
-        var findedTask = findTaskById(id);
-
-        if (findedTask == null) { return false;}
-
-        allTasks.remove(findedTask);
+    public boolean delete(Task task) {
+        allTasks.remove(task);
         return true;
     }
 }

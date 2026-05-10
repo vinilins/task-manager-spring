@@ -14,4 +14,8 @@ public class Task {
     public Long getId() { return id; }
     public String getTitle() { return title; }
     public boolean isCompleted() { return completed; }
+
+    public void setTitle(String title) { this.title = title; }
+    public void setCompleted(boolean isCompleted) { this.completed = isCompleted; }
+
 }
